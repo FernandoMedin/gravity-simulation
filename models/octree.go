@@ -139,12 +139,14 @@ func (qt *Octree) Insert(body *Body) bool {
 	return inserted
 }
 
-func (qt *Octree) Draw() {
-	// Debug octatree shape
-	// b := qt.Bounds
-	// center := rl.NewVector3(b.X+b.Width/2, b.Y+b.Height/2, b.Z+b.Depth/2)
-	// size := rl.NewVector3(b.Width, b.Height, b.Depth)
-	// rl.DrawCubeWires(center, size.X, size.Y, size.Z, rl.Gray)
+func (qt *Octree) Draw(drawBounds bool) {
+
+	if drawBounds {
+		b := qt.Bounds
+		center := rl.NewVector3(b.X+b.Width/2, b.Y+b.Height/2, b.Z+b.Depth/2)
+		size := rl.NewVector3(b.Width, b.Height, b.Depth)
+		rl.DrawCubeWires(center, size.X, size.Y, size.Z, rl.Gray)
+	}
 
 	if qt.Body != nil {
 		rl.DrawSphere(qt.Body.Position, qt.Body.Radius, qt.Body.Color)
@@ -152,7 +154,7 @@ func (qt *Octree) Draw() {
 
 	if qt.Divided {
 		for _, child := range qt.Children {
-			child.Draw()
+			child.Draw(drawBounds)
 		}
 	}
 }

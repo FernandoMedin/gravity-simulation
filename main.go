@@ -12,6 +12,10 @@ import (
 
 func main() {
 	buffer := models.Buffer{}
+	options := models.Options{
+		DrawBounds: false,
+	}
+
 	rl.InitWindow(models.Width, models.Height, "Gravity Simulation - Octree 'space time'")
 	rl.SetTargetFPS(60)
 	rl.InitAudioDevice()
@@ -41,7 +45,7 @@ func main() {
 
 	for !rl.WindowShouldClose() {
 		// Register/Execute input in buffer
-		commands.GetInput(&buffer, &bodies, &central)
+		commands.GetInput(&buffer, &bodies, &central, &options)
 
 		dt := float32(0.1)
 
@@ -83,7 +87,7 @@ func main() {
 		rl.ClearBackground(rl.Black)
 
 		rl.BeginMode3D(camera)
-		root.Draw()
+		root.Draw(options.DrawBounds)
 		rl.EndMode3D()
 
 		rl.DrawText(buffer.MenuOptions, 10, 10, 20, rl.DarkGray)

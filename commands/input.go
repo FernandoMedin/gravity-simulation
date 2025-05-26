@@ -13,7 +13,7 @@ func clearCommands(buffer *models.Buffer) {
 	buffer.Text = []string{}
 }
 
-func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *models.Body) {
+func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *models.Body, options *models.Options) {
 	switch strings.Join(buffer.Commands, "") {
 	// BODIES
 	case "br":
@@ -48,6 +48,10 @@ func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *model
 		central.Color = rl.Red
 		central.Radius = 50.0
 
+	// OPTIONS
+	case "ob":
+		options.DrawBounds = !options.DrawBounds
+
 	// SPAW
 	case "sd":
 		*bodies = append(*bodies, SpawDust(*central, 1000)...)
@@ -59,18 +63,20 @@ func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *model
 	clearCommands(buffer)
 }
 
-func GetInput(buffer *models.Buffer, bodies *[]models.Body, central *models.Body) {
+func GetInput(buffer *models.Buffer, bodies *[]models.Body, central *models.Body, options *models.Options) {
 	switch len(buffer.Commands) {
 	case 0:
 		MainMenu(buffer)
 	case 1:
 		switch buffer.Commands[0] {
-		case "s":
-			SpawMenu(buffer)
-		case "c":
-			CentralMenu(buffer)
 		case "b":
 			BodiesMenu(buffer)
+		case "c":
+			CentralMenu(buffer)
+		case "o":
+			OptionsMenu(buffer)
+		case "s":
+			SpawMenu(buffer)
 		}
 	}
 
@@ -78,12 +84,12 @@ func GetInput(buffer *models.Buffer, bodies *[]models.Body, central *models.Body
 		clearCommands(buffer)
 	}
 	if rl.IsKeyPressed(rl.KeyEnter) {
-		executeCommand(buffer, bodies, central)
+		executeCommand(buffer, bodies, central, options)
 	}
 }
 
 func MainMenu(buffer *models.Buffer) {
-	buffer.MenuOptions = "Main Menu: [B]odies - [C]entral - [S]paw"
+	buffer.MenuOptions = "Main Menu: [B]odies - [C]entral - [O]ptions - [S]paw"
 
 	if rl.IsKeyPressed(rl.KeyC) {
 		buffer.Commands = append(buffer.Commands, "c")
@@ -97,6 +103,10 @@ func MainMenu(buffer *models.Buffer) {
 		buffer.Commands = append(buffer.Commands, "b")
 		buffer.Text = append(buffer.Text, "(B)odies")
 	}
+	if rl.IsKeyPressed(rl.KeyO) {
+		buffer.Commands = append(buffer.Commands, "o")
+		buffer.Text = append(buffer.Text, "(O)ptions")
+	}
 }
 
 func SpawMenu(buffer *models.Buffer) {
@@ -109,6 +119,15 @@ func SpawMenu(buffer *models.Buffer) {
 	if rl.IsKeyPressed(rl.KeyP) {
 		buffer.Commands = append(buffer.Commands, "p")
 		buffer.Text = append(buffer.Text, "(P)lanet")
+	}
+}
+
+func OptionsMenu(buffer *models.Buffer) {
+	buffer.MenuOptions = "Options Menu: Draw [B]ounds"
+
+	if rl.IsKeyPressed(rl.KeyB) {
+		buffer.Commands = append(buffer.Commands, "b")
+		buffer.Text = append(buffer.Text, "Draw (B)ounds")
 	}
 }
 
