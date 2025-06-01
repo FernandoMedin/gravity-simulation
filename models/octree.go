@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -223,7 +225,26 @@ func (qt *Octree) CheckCollisionsForBody(mainBody *Body, handler func(*Body)) {
 	}
 
 	qt.QueryBox(box, func(other *Body) {
-		if mainBody != other && CheckCollisionDebug(*mainBody, *other) {
+		if mainBody != other && !mainBody.Removed && mainBody.Mass > other.Mass && CheckCollisionDebug(*mainBody, *other) {
+			if mainBody.Radius < 5 {
+				mainBody.Radius += 0.04
+			}
+
+			mainBody.Mass += 0.2
+			other.Removed = true
+
+			if mainBody.Mass > 1800 {
+				mainBody.Color = rl.Brown
+			} else if mainBody.Mass > 800 {
+				mainBody.Color = rl.Blue
+			} else if mainBody.Mass > 300 {
+				mainBody.Color = rl.Green
+			} else if mainBody.Mass > 100 {
+				mainBody.Color = rl.Red
+			}
+
+			fmt.Println("Mass: ", mainBody.Mass)
+
 			handler(other)
 		}
 	})

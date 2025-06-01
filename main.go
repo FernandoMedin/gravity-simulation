@@ -14,6 +14,7 @@ func main() {
 	buffer := models.Buffer{}
 	options := models.Options{
 		DrawBounds: false,
+		Collision:  true,
 	}
 
 	rl.InitWindow(models.Width, models.Height, "Gravity Simulation - Octree 'space time'")
@@ -21,7 +22,7 @@ func main() {
 	rl.InitAudioDevice()
 
 	camera := rl.Camera{
-		Position:   rl.NewVector3(10, 30, 400),
+		Position:   rl.NewVector3(10, 30, 600),
 		Target:     rl.NewVector3(0, 0, 0),
 		Up:         rl.NewVector3(0, 1, 0),
 		Fovy:       50.0,
@@ -63,9 +64,11 @@ func main() {
 				bodies[i].Removed = true
 			}
 
-			// root.CheckCollisionsForBody(&bodies[i], func(collided *models.Body) {
-			// 	bodies[i].Removed = true
-			// })
+			if options.Collision {
+				root.CheckCollisionsForBody(&bodies[i], func(collided *models.Body) {
+					fmt.Println("Collision detected!")
+				})
+			}
 		}
 
 		// Rebuild slice and tree without removed bodies

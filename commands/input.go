@@ -23,7 +23,7 @@ func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *model
 			minPos := utils.Vector3MinValue(body.Position)
 			maxPos := utils.Vector3MaxValue(body.Position)
 
-			if minPos >= -1500 && maxPos <= 1500 {
+			if minPos >= -2000 && maxPos <= 2000 {
 				filtered = append(filtered, body)
 			}
 		}
@@ -40,7 +40,7 @@ func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *model
 		central.Color = rl.Black
 		central.Radius = 5.0
 	case "ct":
-		central.Mass = float32(50000.0)
+		central.Mass = float32(75000.0)
 		central.Color = rl.Blue
 		central.Radius = 20.0
 	case "cg":
@@ -51,6 +51,8 @@ func executeCommand(buffer *models.Buffer, bodies *[]models.Body, central *model
 	// OPTIONS
 	case "ob":
 		options.DrawBounds = !options.DrawBounds
+	case "oc":
+		options.Collision = !options.Collision
 
 	// SPAW
 	case "sd":
@@ -123,11 +125,16 @@ func SpawMenu(buffer *models.Buffer) {
 }
 
 func OptionsMenu(buffer *models.Buffer) {
-	buffer.MenuOptions = "Options Menu: Draw [B]ounds"
+	buffer.MenuOptions = "Options Menu: (C)ollision - Draw [B]ounds"
 
 	if rl.IsKeyPressed(rl.KeyB) {
 		buffer.Commands = append(buffer.Commands, "b")
 		buffer.Text = append(buffer.Text, "Draw (B)ounds")
+	}
+
+	if rl.IsKeyPressed(rl.KeyC) {
+		buffer.Commands = append(buffer.Commands, "c")
+		buffer.Text = append(buffer.Text, "(C)ollision")
 	}
 }
 
